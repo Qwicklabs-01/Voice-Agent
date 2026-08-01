@@ -18,7 +18,7 @@ VAPI_ASSISTANT_ID = os.getenv("VAPI_ASSISTANT_ID")
 VAPI_PHONE_NUMBER_ID = os.getenv("VAPI_PHONE_NUMBER_ID")
 GOOGLE_SHEET_DOCUMENT_ID = os.getenv("GOOGLE_SHEET_DOCUMENT_ID")
 GOOGLE_SHEET_NAME = os.getenv("GOOGLE_SHEET_NAME", "Sheet1")
-NTFY_TOPIC = os.getenv("NTFY_TOPIC")
+NTFY_TOPIC = os.getenv("NTFY_TOPIC", "sakshi_voice_leads_99")
 
 # Setup Google Sheets
 scopes = [
