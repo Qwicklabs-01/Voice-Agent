@@ -84,8 +84,7 @@ def handle_webhook():
         "Content-Type": "application/json"
     }
     
-    # Khushi Digital Services Cold Calling Script
-    khushi_system_prompt = f"""You are Khushi, an AI voice agent calling on behalf of a creative agency. You are talking to {lead_name} from {lead_company}.
+    khushi_system_prompt = f"""You are Khushi, an AI voice agent calling on behalf of a corporate travel company. You are talking to {lead_name} from {lead_company}.
     
 Strictly follow this script:
 [Opener]
@@ -96,18 +95,18 @@ Wait for them to answer and tell you their name.
 Wait for them to say yes/okay.
 
 [Value Proposition]
-"Thanks! I run a creative agency. We handle everything from web design and video editing to full-scale marketing. Our whole goal is to help your brand stand out to customers and look significantly better than your competitors."
+"Thanks! I run a corporate travel company. We handle everything from domestic and international air tickets to rail tickets and bulk hotel bookings for businesses. Because of our B2B network, we usually save companies about 15% on their overall travel budget."
 
 [The Discovery Survey]
-"Quick question: what's your main focus right now—getting more leads, or making your brand stand out more?"
+"Quick question: who currently handles all the ticketing and hotel arrangements for your team—is it HR, or do employees book it themselves?"
 Listen to their answer and acknowledge it.
-"Got it. And when was the last time you updated your website or ran a new video marketing campaign?"
+"Got it. And what’s the biggest headache with that right now? Managing train and flight cancellations, or just the sheer time it takes to book everything?"
 Listen to their answer and acknowledge it.
 
 [The Ask]
-"Makes sense. We'd love to show you exactly how we can help you stand out. I can make a free, 2-minute video mockup showing some quick improvements for your brand. If I send it over, would you be open to a 5-minute chat next week?"
+"That makes sense. If we could take that entire workload off your plate at no extra cost, would you be open to a 5-minute chat next week to see how it works?"
 
-Handle objections gracefully. If they say they have an agency, say you handle overflow work and ask to send a portfolio. If they have no budget, say you aren't selling anything today and ask to send the mockup anyway.
+Handle objections gracefully. If they say employees book themselves, mention it costs more because of retail rates and ask for a quick chat to compare. If they have a travel portal, mention the lack of human support for cancellations.
 """
 
     payload = {
@@ -139,8 +138,8 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "PrimaryFocus": {"type": "string", "description": "Whether their focus is getting leads or standing out"},
-                            "WebsiteStatus": {"type": "string", "description": "When they last updated their website or ran a campaign"}
+                            "CurrentBookingMethod": {"type": "string", "description": "Who handles ticketing and hotel arrangements"},
+                            "BiggestHeadache": {"type": "string", "description": "The biggest problem they have with booking travel"}
                         }
                     }
                 }
@@ -183,8 +182,8 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
             
     # 3. Extract Data & Write to Google Sheets
     call_outcome = "Unknown"
-    primary_focus = ""
-    website_status = ""
+    booking_method = ""
+    biggest_headache = ""
     
     analysis = call_result_data.get("analysis", {})
     structured_data = analysis.get("structuredData", {})
@@ -195,8 +194,8 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
         call_outcome = "Voicemail / No Answer"
     else:
         call_outcome = "Completed"
-        primary_focus = structured_data.get("PrimaryFocus", "")
-        website_status = structured_data.get("WebsiteStatus", "")
+        booking_method = structured_data.get("CurrentBookingMethod", "")
+        biggest_headache = structured_data.get("BiggestHeadache", "")
 
     print(f"Call Outcome: {call_outcome}")
     
@@ -207,8 +206,8 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
                 normalized_phone,
                 lead_company,
                 call_outcome,
-                primary_focus,
-                website_status
+                booking_method,
+                biggest_headache
             ]
             worksheet.append_row(row_data)
             print("Successfully appended row to Google Sheet.")
@@ -219,8 +218,8 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
     notification_msg = (
         f"New Lead Processed: {lead_name}\n"
         f"Outcome: {call_outcome}\n"
-        f"Primary Focus: {primary_focus}\n"
-        f"Website Status: {website_status}"
+        f"Booking Method: {booking_method}\n"
+        f"Biggest Headache: {biggest_headache}"
     )
     send_ntfy_notification(notification_msg)
             
