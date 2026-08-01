@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice AI Lead Capture</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus {
+            border-color: #4A90E2;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+        .success-message {
+            display: none;
+            text-align: center;
+            color: #2E7D32;
+            background-color: #E8F5E9;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Book an AI Call</h2>
+    <form id="leadForm">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number (10 digits)</label>
+            <input type="tel" id="phone" placeholder="6290873841" required>
+        </div>
+        <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" id="company" placeholder="Acme Corp" required>
+        </div>
+        <div class="form-group">
+            <label for="request">What do you need help with?</label>
+            <textarea id="request" rows="3" placeholder="I want to automate my leads..." required></textarea>
+        </div>
+        <button type="submit" id="submitBtn">Call Me Now</button>
+    </form>
+    <div class="success-message" id="successMessage">
+        Success! Your phone will ring in 5 seconds...
+    </div>
+</div>
+
+<script>
+    document.getElementById('leadForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submitBtn');
+        btn.textContent = 'Connecting...';
+        btn.disabled = true;
+
+        const payload = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            company: document.getElementById('company').value,
+            request: document.getElementById('request').value
+        };
+
+        try {
+            const response = await fetch('http://localhost:5001/webhook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            document.getElementById('leadForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        } catch (error) {
+            alert('Error connecting to the local server. Make sure run.bat is running!');
+            btn.textContent = 'Call Me Now';
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
