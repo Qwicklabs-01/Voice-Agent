@@ -205,16 +205,29 @@ Handle objections gracefully. If they say employees book themselves, mention it 
     
     if worksheet:
         try:
-            row_data = [
-                lead_name,
-                normalized_phone,
-                lead_company,
-                is_voicemail,
-                answer,
-                information
-            ]
-            worksheet.append_row(row_data)
-            print("Successfully appended row to Google Sheet.")
+            phone_col = worksheet.col_values(2) # Column B is index 2
+            found_row = None
+            for i, phone_val in enumerate(phone_col):
+                if normalize_phone_number(phone_val) == normalized_phone:
+                    found_row = i + 1 # 1-indexed
+                    break
+            
+            if found_row:
+                worksheet.update_acell(f'D{found_row}', is_voicemail)
+                worksheet.update_acell(f'E{found_row}', answer)
+                worksheet.update_acell(f'F{found_row}', information)
+                print(f"Successfully updated row {found_row} in Google Sheet.")
+            else:
+                row_data = [
+                    lead_name,
+                    normalized_phone,
+                    lead_company,
+                    is_voicemail,
+                    answer,
+                    information
+                ]
+                worksheet.append_row(row_data)
+                print("Phone not found. Appended new row to Google Sheet.")
         except Exception as e:
             print(f"Failed to write to Google Sheet: {e}")
             
