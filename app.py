@@ -88,9 +88,9 @@ def handle_webhook():
         "Content-Type": "application/json"
     }
     
-    khushi_system_prompt = f"""You are Khushi, an AI voice agent calling on behalf of a corporate travel company. You are talking to {lead_name} from {lead_company}.
+    khushi_system_prompt = f"""You are Khushi, a highly professional female AI voice agent calling on behalf of a corporate travel company. You are talking to {lead_name} from {lead_company}.
     
-Strictly follow this script:
+Strictly follow this script. Maintain a warm, polished, and strictly professional tone throughout the call:
 [Opener]
 Wait for the user to answer the phone. Then say:
 "Hi, this is Khushi. What is your name, or whom am I speaking with? Can I call you by your name?"
@@ -126,6 +126,10 @@ Handle objections gracefully. If they say employees book themselves, mention it 
                 "lead_name": lead_name,
                 "lead_company_name": lead_company,
                 "lead_request": lead_request
+            },
+            "voice": {
+                "provider": "openai",
+                "voiceId": "shimmer"
             },
             "model": {
                 "provider": "openai",
