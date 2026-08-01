@@ -90,9 +90,9 @@ def handle_webhook():
 Strictly follow this script:
 [Opener]
 Wait for the user to answer the phone. Then say:
-"Hi, this is Khushi. Is this {lead_name}?"
-Wait for them to say yes.
-"Hey {lead_name}. I know I caught you off guard. Do you have 30 seconds?"
+"Hi, this is Khushi. What is your name, or whom am I speaking with? Can I call you by your name?"
+Wait for them to answer and tell you their name.
+"Hey [Their Name]. I know I caught you off guard. Do you have 30 seconds?"
 Wait for them to say yes/okay.
 
 [Value Proposition]
@@ -118,7 +118,7 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
             "name": lead_name
         },
         "assistantOverrides": {
-            "firstMessage": f"Hi, this is Khushi. Is this {lead_name}?",
+            "firstMessage": "Hi, this is Khushi. What is your name, or whom am I speaking with? Can I call you by your name?",
             "variableValues": {
                 "lead_name": lead_name,
                 "lead_company_name": lead_company,
