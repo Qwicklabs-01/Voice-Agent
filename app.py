@@ -138,8 +138,8 @@ Handle objections gracefully. If they say employees book themselves, mention it 
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "CurrentBookingMethod": {"type": "string", "description": "Who handles ticketing and hotel arrangements"},
-                            "BiggestHeadache": {"type": "string", "description": "The biggest problem they have with booking travel"}
+                            "Answer": {"type": "string", "description": "Who handles ticketing and hotel arrangements"},
+                            "Information": {"type": "string", "description": "The biggest problem they have with booking travel"}
                         }
                     }
                 }
@@ -181,9 +181,9 @@ Handle objections gracefully. If they say employees book themselves, mention it 
             break
             
     # 3. Extract Data & Write to Google Sheets
-    call_outcome = "Unknown"
-    booking_method = ""
-    biggest_headache = ""
+    is_voicemail = "Yes"
+    answer = ""
+    information = ""
     
     analysis = call_result_data.get("analysis", {})
     structured_data = analysis.get("structuredData", {})
@@ -191,13 +191,13 @@ Handle objections gracefully. If they say employees book themselves, mention it 
     # Simple voicemail detection logic (Vapi often provides a successEvaluation or endedReason)
     ended_reason = call_result_data.get("endedReason", "")
     if "voicemail" in ended_reason.lower() or not analysis:
-        call_outcome = "Voicemail / No Answer"
+        is_voicemail = "Yes"
     else:
-        call_outcome = "Completed"
-        booking_method = structured_data.get("CurrentBookingMethod", "")
-        biggest_headache = structured_data.get("BiggestHeadache", "")
+        is_voicemail = "No"
+        answer = structured_data.get("Answer", "")
+        information = structured_data.get("Information", "")
 
-    print(f"Call Outcome: {call_outcome}")
+    print(f"Voicemail: {is_voicemail}")
     
     if worksheet:
         try:
@@ -205,9 +205,9 @@ Handle objections gracefully. If they say employees book themselves, mention it 
                 lead_name,
                 normalized_phone,
                 lead_company,
-                call_outcome,
-                booking_method,
-                biggest_headache
+                is_voicemail,
+                answer,
+                information
             ]
             worksheet.append_row(row_data)
             print("Successfully appended row to Google Sheet.")
@@ -217,9 +217,9 @@ Handle objections gracefully. If they say employees book themselves, mention it 
     # 4. Send ntfy notification
     notification_msg = (
         f"New Lead Processed: {lead_name}\n"
-        f"Outcome: {call_outcome}\n"
-        f"Booking Method: {booking_method}\n"
-        f"Biggest Headache: {biggest_headache}"
+        f"Voicemail: {is_voicemail}\n"
+        f"Answer: {answer}\n"
+        f"Information: {information}"
     )
     send_ntfy_notification(notification_msg)
             
