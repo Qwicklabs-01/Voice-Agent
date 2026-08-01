@@ -124,6 +124,8 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
                 "lead_request": lead_request
             },
             "model": {
+                "provider": "openai",
+                "model": "gpt-4o-mini",
                 "messages": [
                     {
                         "role": "system",
