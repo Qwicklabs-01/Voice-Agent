@@ -226,7 +226,7 @@ Handle objections gracefully. If they say employees book themselves, mention it 
     return jsonify({
         "status": "success", 
         "call_id": call_id,
-        "outcome": call_outcome
+        "is_voicemail": is_voicemail
     })
 
 if __name__ == '__main__':
