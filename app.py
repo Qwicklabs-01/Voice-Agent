@@ -250,6 +250,53 @@ Handle objections gracefully. If they say employees book themselves, mention it 
         "is_voicemail": is_voicemail
     })
 
+@app.route('/vapi-webhook', methods=['POST'])
+def handle_vapi_webhook():
+    data = request.json
+    if not data:
+        return jsonify({"error": "No JSON data provided"}), 400
+        
+    message = data.get("message", {})
+    if message.get("type") == "end-of-call-report":
+        analysis = message.get("analysis", {})
+        structured_data = analysis.get("structuredData", {})
+        
+        lead_name = structured_data.get("Name", "Web Lead")
+        answer = structured_data.get("Answer", "")
+        information = structured_data.get("Information", "")
+        
+        # Web Caller, no phone or company known
+        normalized_phone = "" 
+        lead_company = ""
+        is_voicemail = "No" # since it's a web call, they definitely talked
+        
+        print(f"Web Call Ended: {lead_name}")
+        
+        if worksheet:
+            try:
+                row_data = [
+                    lead_name,
+                    normalized_phone,
+                    lead_company,
+                    is_voicemail,
+                    answer,
+                    information
+                ]
+                worksheet.append_row(row_data)
+                print("Appended Web Call row to Google Sheet.")
+            except Exception as e:
+                print(f"Failed to write to Google Sheet: {e}")
+                
+        # Send ntfy notification
+        notification_msg = (
+            f"New Web Call Lead Processed: {lead_name}\n"
+            f"Answer: {answer}\n"
+            f"Information: {information}"
+        )
+        send_ntfy_notification(notification_msg)
+        
+    return jsonify({"status": "success"}), 200
+
 if __name__ == '__main__':
     print("Starting Outbound Lead Qualifier Server...")
     app.run(host='0.0.0.0', port=5001)
