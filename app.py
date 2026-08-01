@@ -118,6 +118,7 @@ Handle objections gracefully. If they say they have an agency, say you handle ov
             "name": lead_name
         },
         "assistantOverrides": {
+            "firstMessage": f"Hi, this is Khushi. Is this {lead_name}?",
             "variableValues": {
                 "lead_name": lead_name,
                 "lead_company_name": lead_company,
