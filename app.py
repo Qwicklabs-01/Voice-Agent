@@ -27,8 +27,12 @@ scopes = [
 ]
 
 try:
+    sa_path = "/etc/secrets/service_account.json"
+    if not os.path.exists(sa_path):
+        sa_path = "service_account.json"
+        
     credentials = Credentials.from_service_account_file(
-        "service_account.json", scopes=scopes
+        sa_path, scopes=scopes
     )
     gc = gspread.authorize(credentials)
     sh = gc.open_by_key(GOOGLE_SHEET_DOCUMENT_ID)
